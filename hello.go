@@ -12,39 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package gopher
 
 import (
-	"context"
 	"fmt"
-	"log"
-	"github.com/cloudevents/sdk-go/v2/event"
+	"net/http"
 )
 
-// MessagePublishedData contains the full Pub/Sub message
-// See the documentation for more details:
-// https://cloud.google.com/eventarc/docs/cloudevents#pubsub
-type MessagePublishedData struct {
-	Message PubSubMessage
-}
-
-// PubSubMessage is the payload of a Pub/Sub event.
-// See the documentation for more details:
-// https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
-type PubSubMessage struct {
-	Data []byte `json:"data"`
-}
-
-func gcsToBackendHttp(ctx context.Context, e event.Event) error {
-	var msg MessagePublishedData
-	if err := e.DataAs(&msg); err != nil {
-		return fmt.Errorf("event.DataAs: %v", err)
-	}
-
-	name := string(msg.Message.Data) // Automatically decoded from base64.
-	if name == "" {
-		name = "World"
-	}
-	log.Printf("Hello, %s!", name)
-	return nil
+// HelloWorld prints "Hello, world."
+func gcsToBackendHttp(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Hello, world.")
 }
